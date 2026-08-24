@@ -1,5 +1,4 @@
 import React from "react";
-import { ShieldCheck, AlertTriangle } from "lucide-react";
 
 interface TestModeBannerProps {
   overrideEmail?: string;
@@ -14,20 +13,20 @@ export const TestModeBanner: React.FC<TestModeBannerProps> = ({
     return (
       <div
         style={{
-          display: "flex",
+          display: "inline-flex",
           alignItems: "center",
           gap: "6px",
-          padding: "4px 10px",
+          padding: "3px 8px",
           backgroundColor: "#FEF2F2",
           border: "1px solid #FECACA",
-          borderRadius: "4px",
+          borderRadius: "3px",
           fontSize: "11px",
           color: "#991B1B",
           fontWeight: 500,
         }}
       >
-        <AlertTriangle size={13} color="#DC2626" />
-        <span>Live Production: Emails will reach real recipients</span>
+        <span style={{ width: "5px", height: "5px", borderRadius: "50%", backgroundColor: "#DC2626" }} />
+        <span>Production: Outbound live</span>
       </div>
     );
   }
@@ -35,38 +34,26 @@ export const TestModeBanner: React.FC<TestModeBannerProps> = ({
   return (
     <div
       style={{
-        display: "flex",
+        display: "inline-flex",
         alignItems: "center",
-        justifyContent: "space-between",
-        gap: "8px",
-        padding: "5px 12px",
-        backgroundColor: "#F0FDF4",
-        border: "1px solid #BBF7D0",
-        borderRadius: "4px",
+        gap: "6px",
+        padding: "3px 8px",
+        backgroundColor: "#F4F4F5",
+        border: "1px solid #E4E4E7",
+        borderRadius: "3px",
         fontSize: "11px",
-        color: "#166534",
+        color: "#52525B",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-        <ShieldCheck size={14} color="#16A34A" />
-        <span style={{ fontWeight: 600 }}>SAFETY OVERRIDE ACTIVE:</span>
-        <span style={{ color: "#15803D" }}>
-          All outbound emails route strictly to <strong>{overrideEmail}</strong>
-        </span>
-      </div>
       <span
         style={{
-          fontSize: "10px",
-          padding: "1px 5px",
-          backgroundColor: "#DCFCE7",
-          border: "1px solid #86EFAC",
-          borderRadius: "3px",
-          fontWeight: 600,
-          letterSpacing: "0.02em",
+          width: "5px",
+          height: "5px",
+          borderRadius: "50%",
+          backgroundColor: "#16A34A",
         }}
-      >
-        FAIL-SAFE ON
-      </span>
+      />
+      <span>Test Mode: Outbound routed to <strong style={{ color: "#18181B" }}>{overrideEmail}</strong></span>
     </div>
   );
 };

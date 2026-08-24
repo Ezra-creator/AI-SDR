@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { PipelineColumn } from "./PipelineColumn";
 import { LeadCard } from "./LeadCard";
-import { PlusCircle, Search, Filter, Sparkles, Inbox } from "lucide-react";
 
 interface PipelineBoardProps {
   leads: any[];
@@ -48,63 +47,35 @@ export const PipelineBoard: React.FC<PipelineBoardProps> = ({
     return (
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "60px 20px",
-          textAlign: "center",
-          maxWidth: "460px",
-          margin: "40px auto",
-          backgroundColor: "#FFFFFF",
-          border: "1px solid #E4E4E7",
-          borderRadius: "8px",
+          padding: "32px 0",
+          maxWidth: "480px",
         }}
       >
-        <div
-          style={{
-            width: "40px",
-            height: "40px",
-            borderRadius: "6px",
-            backgroundColor: "#EEF2FF",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            marginBottom: "16px",
-          }}
-        >
-          <Sparkles size={20} color="#4338CA" />
-        </div>
-        <h3 style={{ fontSize: "15px", fontWeight: 700, color: "#18181B", marginBottom: "6px" }}>
-          No leads discovered yet
+        <h3 style={{ fontSize: "14px", fontWeight: 600, color: "#18181B", marginBottom: "4px" }}>
+          No campaigns created
         </h3>
-        <p style={{ fontSize: "12px", color: "#71717A", lineHeight: 1.5, marginBottom: "20px" }}>
-          Create your first target campaign with an Ideal Customer Profile (ICP) and value pitch. Vanguard SDR will discover real companies on the live web, research verified facts, and score qualification.
+        <p style={{ fontSize: "12px", color: "#71717A", lineHeight: 1.45, marginBottom: "12px" }}>
+          Create a campaign with an Ideal Customer Profile (ICP) and value pitch to discover and research prospects.
         </p>
         <button
           onClick={onOpenNewCampaign}
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "6px",
-            padding: "8px 16px",
+            padding: "6px 12px",
             backgroundColor: "#4338CA",
             color: "#FFFFFF",
-            borderRadius: "4px",
+            borderRadius: "3px",
             border: "none",
             fontSize: "12px",
-            fontWeight: 600,
+            fontWeight: 500,
             cursor: "pointer",
           }}
         >
-          <PlusCircle size={14} />
-          <span>Create First Campaign</span>
+          New Campaign
         </button>
       </div>
     );
   }
 
-  // Filter leads into columns
   const getColumnLeads = (statuses: string[]) => {
     return filteredLeads.filter((l) => statuses.includes(l.status));
   };
@@ -113,48 +84,38 @@ export const PipelineBoard: React.FC<PipelineBoardProps> = ({
   const mobileLeads = getColumnLeads(currentMobileColumn.statuses);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%" }}>
-      {/* Top Filter & Search Bar */}
+    <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
+      {/* Top Filter Bar */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: "12px",
-          flexWrap: "wrap",
+          gap: "10px",
         }}
       >
-        <div style={{ position: "relative", width: "260px" }}>
-          <Search
-            size={13}
-            color="#A1A1AA"
-            style={{ position: "absolute", left: "9px", top: "50%", transform: "translateY(-50%)" }}
-          />
-          <input
-            type="text"
-            placeholder="Search company, domain, summary..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "6px 8px 6px 28px",
-              borderRadius: "4px",
-              border: "1px solid #E4E4E7",
-              backgroundColor: "#FFFFFF",
-              fontSize: "12px",
-              color: "#18181B",
-            }}
-          />
-        </div>
+        <input
+          type="text"
+          placeholder="Filter leads..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{
+            width: "220px",
+            padding: "5px 8px",
+            borderRadius: "3px",
+            border: "1px solid #E4E4E7",
+            backgroundColor: "#FFFFFF",
+            fontSize: "11px",
+            color: "#18181B",
+          }}
+        />
 
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{ fontSize: "11px", color: "#71717A", fontWeight: 500 }}>
-            Total Leads: <strong>{filteredLeads.length}</strong>
-          </span>
-        </div>
+        <span style={{ fontSize: "11px", color: "#71717A" }}>
+          {filteredLeads.length} {filteredLeads.length === 1 ? "lead" : "leads"}
+        </span>
       </div>
 
-      {/* 1. Desktop Kanban Board */}
+      {/* Desktop Kanban */}
       <div className="pipeline-board">
         {COLUMNS.map((col) => {
           const colLeads = getColumnLeads(col.statuses);
@@ -173,17 +134,16 @@ export const PipelineBoard: React.FC<PipelineBoardProps> = ({
         })}
       </div>
 
-      {/* 2. Mobile Responsive Tabbed List View */}
+      {/* Mobile Stream */}
       <div className="pipeline-mobile-view" style={{ display: "none" }}>
-        {/* Mobile Stage Selector Tabs */}
         <div
           style={{
             display: "flex",
             gap: "4px",
             overflowX: "auto",
-            paddingBottom: "8px",
+            paddingBottom: "6px",
             borderBottom: "1px solid #E4E4E7",
-            marginBottom: "12px",
+            marginBottom: "8px",
           }}
         >
           {COLUMNS.map((col) => {
@@ -196,37 +156,28 @@ export const PipelineBoard: React.FC<PipelineBoardProps> = ({
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "5px",
-                  padding: "6px 10px",
-                  borderRadius: "4px",
+                  gap: "4px",
+                  padding: "4px 8px",
+                  borderRadius: "3px",
                   border: isTabActive ? "1px solid #4338CA" : "1px solid #E4E4E7",
-                  backgroundColor: isTabActive ? "#EEF2FF" : "#FFFFFF",
-                  color: isTabActive ? "#4338CA" : "#52525B",
+                  backgroundColor: isTabActive ? "#F4F4F5" : "#FFFFFF",
+                  color: isTabActive ? "#18181B" : "#71717A",
                   fontSize: "11px",
-                  fontWeight: isTabActive ? 600 : 500,
+                  fontWeight: isTabActive ? 600 : 400,
                   cursor: "pointer",
                   whiteSpace: "nowrap",
                 }}
               >
                 <span
                   style={{
-                    width: "6px",
-                    height: "6px",
+                    width: "5px",
+                    height: "5px",
                     borderRadius: "50%",
                     backgroundColor: col.dotColor,
                   }}
                 />
                 <span>{col.title}</span>
-                <span
-                  style={{
-                    fontSize: "10px",
-                    fontWeight: 700,
-                    padding: "1px 4px",
-                    borderRadius: "8px",
-                    backgroundColor: isTabActive ? "#C7D2FE" : "#F4F4F5",
-                    color: isTabActive ? "#312E81" : "#71717A",
-                  }}
-                >
+                <span style={{ fontSize: "10px", color: "#A1A1AA" }}>
                   {count}
                 </span>
               </button>
@@ -234,19 +185,10 @@ export const PipelineBoard: React.FC<PipelineBoardProps> = ({
           })}
         </div>
 
-        {/* Mobile Vertical List */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
           {mobileLeads.length === 0 ? (
-            <div
-              style={{
-                padding: "32px 16px",
-                textAlign: "center",
-                color: "#A1A1AA",
-                fontSize: "12px",
-                fontStyle: "italic",
-              }}
-            >
-              No leads in {currentMobileColumn.title} stage
+            <div style={{ padding: "20px 0", color: "#A1A1AA", fontSize: "11px" }}>
+              No leads in {currentMobileColumn.title}
             </div>
           ) : (
             mobileLeads.map((lead) => (

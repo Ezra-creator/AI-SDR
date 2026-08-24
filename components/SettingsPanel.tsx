@@ -1,15 +1,5 @@
 import React from "react";
 import useSWR from "swr";
-import {
-  ShieldCheck,
-  Cpu,
-  Database,
-  Mail,
-  Clock,
-  ExternalLink,
-  CheckCircle2,
-  AlertCircle,
-} from "lucide-react";
 import { TestModeBanner } from "./TestModeBanner";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -18,139 +8,89 @@ export const SettingsPanel: React.FC = () => {
   const { data: settings } = useSWR("/api/settings", fetcher);
 
   return (
-    <div style={{ maxWidth: "720px", display: "flex", flexDirection: "column", gap: "20px" }}>
+    <div style={{ maxWidth: "680px", display: "flex", flexDirection: "column", gap: "16px" }}>
       {/* Title */}
       <div>
-        <h2 style={{ fontSize: "16px", fontWeight: 700, color: "#18181B" }}>
-          Pipeline Engine Settings & Safety Controls
+        <h2 style={{ fontSize: "14px", fontWeight: 600, color: "#18181B" }}>
+          Settings & Safety Controls
         </h2>
-        <p style={{ fontSize: "12px", color: "#71717A", marginTop: "2px" }}>
-          Configure SDR safety overrides, autonomous sending parameters, and AI model orchestration.
+        <p style={{ fontSize: "11px", color: "#71717A" }}>
+          Pipeline safety parameters and infrastructure status.
         </p>
       </div>
 
-      {/* 1. Safety Override Section */}
-      <div
-        style={{
-          backgroundColor: "#FFFFFF",
-          border: "1px solid #E4E4E7",
-          borderRadius: "6px",
-          padding: "16px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <ShieldCheck size={16} color="#059669" />
-          <h3 style={{ fontSize: "13px", fontWeight: 700, color: "#18181B" }}>
-            Critical Outbound Safety Guardrails
-          </h3>
+      {/* Flattened Definition List / Settings Grid */}
+      <div style={{ borderTop: "1px solid #E4E4E7", display: "flex", flexDirection: "column" }}>
+        {/* Row 1: Safety Guardrail */}
+        <div style={{ padding: "12px 0", borderBottom: "1px solid #E4E4E7", display: "flex", flexDirection: "column", gap: "6px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <span style={{ fontSize: "12px", fontWeight: 500, color: "#18181B" }}>Recipient Override</span>
+            <TestModeBanner
+              overrideEmail={settings?.testModeRecipientOverride}
+              isActive={settings?.isTestOverrideActive}
+            />
+          </div>
+          <p style={{ fontSize: "11px", color: "#71717A", lineHeight: 1.35 }}>
+            When active, all outbound outreach is redirected exclusively to the designated override email. Real recipient domains will never be contacted.
+          </p>
         </div>
 
-        <TestModeBanner
-          overrideEmail={settings?.testModeRecipientOverride}
-          isActive={settings?.isTestOverrideActive}
-        />
-
-        <p style={{ fontSize: "12px", color: "#52525B", lineHeight: 1.45 }}>
-          Vanguard SDR is engineered with a code-enforced recipient safety interceptor. When active, <strong>no real third-party domains will receive outreach</strong>; all emails are automatically redirected to your designated test address with an audit header.
-        </p>
-      </div>
-
-      {/* 2. Automated Follow-Up Configuration */}
-      <div
-        style={{
-          backgroundColor: "#FFFFFF",
-          border: "1px solid #E4E4E7",
-          borderRadius: "6px",
-          padding: "16px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <Clock size={16} color="#7C3AED" />
-          <h3 style={{ fontSize: "13px", fontWeight: 700, color: "#18181B" }}>
-            Automated Follow-Up Cadence & Angle Diversity
-          </h3>
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-          <div style={{ padding: "10px", backgroundColor: "#FBFBFC", border: "1px solid #E4E4E7", borderRadius: "4px" }}>
-            <div style={{ fontSize: "11px", fontWeight: 600, color: "#71717A" }}>
-              Default Follow-Up Interval
-            </div>
-            <div style={{ fontSize: "14px", fontWeight: 700, color: "#18181B", marginTop: "2px" }}>
-              4 Business Days
+        {/* Row 2: Follow-up Cadence */}
+        <div style={{ padding: "12px 0", borderBottom: "1px solid #E4E4E7", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "16px" }}>
+          <div>
+            <div style={{ fontSize: "12px", fontWeight: 500, color: "#18181B" }}>Follow-up Cadence</div>
+            <div style={{ fontSize: "11px", color: "#71717A", marginTop: "2px" }}>
+              Interval between automated sequence follow-ups
             </div>
           </div>
-
-          <div style={{ padding: "10px", backgroundColor: "#FBFBFC", border: "1px solid #E4E4E7", borderRadius: "4px" }}>
-            <div style={{ fontSize: "11px", fontWeight: 600, color: "#71717A" }}>
-              Maximum Follow-Up Emails
-            </div>
-            <div style={{ fontSize: "14px", fontWeight: 700, color: "#18181B", marginTop: "2px" }}>
-              3 Follow-Ups (4 total)
-            </div>
+          <div style={{ textAlign: "right" }}>
+            <span style={{ fontSize: "12px", fontWeight: 500, color: "#18181B" }}>4 Business Days</span>
+            <div style={{ fontSize: "10px", color: "#A1A1AA" }}>Max 3 follow-ups (4 total)</div>
           </div>
         </div>
 
-        <div style={{ fontSize: "12px", color: "#52525B", lineHeight: 1.4 }}>
-          Each follow-up automatically rotates among distinct angles: <em>Recent News Hooks</em>, <em>SDK Architecture Observations</em>, <em>Quantifiable ROI Metrics</em>, and <em>Breakup Permission</em>.
-        </div>
-      </div>
-
-      {/* 3. Infrastructure & AI Integration Status */}
-      <div
-        style={{
-          backgroundColor: "#FFFFFF",
-          border: "1px solid #E4E4E7",
-          borderRadius: "6px",
-          padding: "16px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <Cpu size={16} color="#4338CA" />
-          <h3 style={{ fontSize: "13px", fontWeight: 700, color: "#18181B" }}>
-            Active AI & Backend Services
-          </h3>
+        {/* Row 3: Angle Diversity */}
+        <div style={{ padding: "12px 0", borderBottom: "1px solid #E4E4E7", display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "16px" }}>
+          <div>
+            <div style={{ fontSize: "12px", fontWeight: 500, color: "#18181B" }}>Angle Diversity Enforcement</div>
+            <div style={{ fontSize: "11px", color: "#71717A", marginTop: "2px" }}>
+              Rotates across Pain Point Focus, Recent News, SDK Architecture, and Breakup Permission
+            </div>
+          </div>
+          <span style={{ fontSize: "11px", color: "#059669", fontWeight: 500 }}>Active</span>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", backgroundColor: "#FBFBFC", border: "1px solid #F4F4F5", borderRadius: "4px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Cpu size={14} color="#4338CA" />
-              <span style={{ fontSize: "12px", fontWeight: 600, color: "#18181B" }}>Groq LLM Engine</span>
-            </div>
-            <span style={{ fontSize: "11px", color: "#4338CA", fontWeight: 600 }}>
-              {settings?.defaultModel || "openai/gpt-oss-120b (Active)"}
-            </span>
+        {/* Row 4: Groq Inference Engine */}
+        <div style={{ padding: "12px 0", borderBottom: "1px solid #E4E4E7", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <div style={{ fontSize: "12px", fontWeight: 500, color: "#18181B" }}>Groq Model</div>
+            <div style={{ fontSize: "11px", color: "#71717A" }}>Live verified LLM orchestrator</div>
           </div>
+          <code style={{ fontSize: "11px", backgroundColor: "#F4F4F5", padding: "2px 6px", borderRadius: "3px", color: "#18181B" }}>
+            {settings?.defaultModel || "openai/gpt-oss-120b"}
+          </code>
+        </div>
 
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", backgroundColor: "#FBFBFC", border: "1px solid #F4F4F5", borderRadius: "4px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Database size={14} color="#059669" />
-              <span style={{ fontSize: "12px", fontWeight: 600, color: "#18181B" }}>Neon Serverless Postgres</span>
-            </div>
-            <span style={{ fontSize: "11px", color: settings?.isDbConfigured ? "#059669" : "#71717A", fontWeight: 600 }}>
-              {settings?.isDbConfigured ? "Connected ✅" : "Mock In-Memory"}
-            </span>
+        {/* Row 5: Database Connection */}
+        <div style={{ padding: "12px 0", borderBottom: "1px solid #E4E4E7", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <div style={{ fontSize: "12px", fontWeight: 500, color: "#18181B" }}>Database Persistence</div>
+            <div style={{ fontSize: "11px", color: "#71717A" }}>Neon Serverless Postgres / Local Fallback</div>
           </div>
+          <span style={{ fontSize: "11px", color: settings?.isDbConfigured ? "#059669" : "#71717A" }}>
+            {settings?.isDbConfigured ? "Connected" : "In-Memory Store"}
+          </span>
+        </div>
 
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", backgroundColor: "#FBFBFC", border: "1px solid #F4F4F5", borderRadius: "4px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <Mail size={14} color="#D97706" />
-              <span style={{ fontSize: "12px", fontWeight: 600, color: "#18181B" }}>Resend Email API</span>
-            </div>
-            <span style={{ fontSize: "11px", color: settings?.isResendConfigured ? "#059669" : "#71717A", fontWeight: 600 }}>
-              {settings?.isResendConfigured ? "Configured ✅" : "Mock Safe Mode"}
-            </span>
+        {/* Row 6: Resend Email Engine */}
+        <div style={{ padding: "12px 0", borderBottom: "1px solid #E4E4E7", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <div style={{ fontSize: "12px", fontWeight: 500, color: "#18181B" }}>Resend Email Delivery</div>
+            <div style={{ fontSize: "11px", color: "#71717A" }}>Outbound SMTP / API transport</div>
           </div>
+          <span style={{ fontSize: "11px", color: settings?.isResendConfigured ? "#059669" : "#71717A" }}>
+            {settings?.isResendConfigured ? "Configured" : "Mock Safe Mode"}
+          </span>
         </div>
       </div>
     </div>

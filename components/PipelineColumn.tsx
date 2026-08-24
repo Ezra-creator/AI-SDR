@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { ChevronDown, ChevronRight } from "lucide-react";
 import { LeadCard } from "./LeadCard";
-import { StatusBadge } from "./StatusBadge";
 
 interface PipelineColumnProps {
   statusKey: string;
@@ -30,44 +28,31 @@ export const PipelineColumn: React.FC<PipelineColumnProps> = ({
         onClick={() => setIsCollapsed(false)}
         className="kanban-col-collapsed"
         style={{
-          height: "calc(100vh - 160px)",
+          height: "calc(100vh - 150px)",
           backgroundColor: "#F4F4F5",
           border: "1px solid #E4E4E7",
-          borderRadius: "6px",
+          borderRadius: "4px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          padding: "12px 0",
-          gap: "12px",
+          padding: "10px 0",
+          gap: "8px",
           cursor: "pointer",
           userSelect: "none",
         }}
         title={`Expand ${title} (${leads.length})`}
       >
-        <ChevronRight size={14} color="#71717A" />
         <span
           style={{
             writingMode: "vertical-rl",
             transform: "rotate(180deg)",
             fontSize: "11px",
-            fontWeight: 600,
-            color: "#52525B",
+            fontWeight: 500,
+            color: "#71717A",
             letterSpacing: "0.02em",
           }}
         >
-          {title}
-        </span>
-        <span
-          style={{
-            fontSize: "10px",
-            fontWeight: 700,
-            padding: "2px 4px",
-            borderRadius: "10px",
-            backgroundColor: "#E4E4E7",
-            color: "#52525B",
-          }}
-        >
-          {leads.length}
+          {title} ({leads.length})
         </span>
       </div>
     );
@@ -78,21 +63,21 @@ export const PipelineColumn: React.FC<PipelineColumnProps> = ({
       {/* Column Header */}
       <div
         style={{
-          padding: "10px 12px",
+          padding: "8px 10px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           borderBottom: "1px solid #E4E4E7",
           backgroundColor: "#FFFFFF",
-          borderTopLeftRadius: "5px",
-          borderTopRightRadius: "5px",
+          borderTopLeftRadius: "3px",
+          borderTopRightRadius: "3px",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <span
             style={{
-              width: "7px",
-              height: "7px",
+              width: "6px",
+              height: "6px",
               borderRadius: "50%",
               backgroundColor: dotColor,
               display: "inline-block",
@@ -101,17 +86,7 @@ export const PipelineColumn: React.FC<PipelineColumnProps> = ({
           <span style={{ fontWeight: 600, fontSize: "12px", color: "#18181B" }}>
             {title}
           </span>
-          <span
-            style={{
-              fontSize: "10px",
-              fontWeight: 600,
-              padding: "1px 5px",
-              borderRadius: "10px",
-              backgroundColor: "#F4F4F5",
-              color: "#71717A",
-              border: "1px solid #E4E4E7",
-            }}
-          >
+          <span style={{ fontSize: "11px", color: "#A1A1AA" }}>
             {leads.length}
           </span>
         </div>
@@ -119,28 +94,26 @@ export const PipelineColumn: React.FC<PipelineColumnProps> = ({
         {statusKey === "disqualified" && (
           <button
             onClick={() => setIsCollapsed(true)}
-            title="Collapse column"
             style={{
               background: "none",
               border: "none",
               cursor: "pointer",
-              padding: "2px",
-              display: "flex",
-              alignItems: "center",
+              fontSize: "10px",
+              color: "#A1A1AA",
             }}
           >
-            <ChevronDown size={14} color="#71717A" />
+            Hide
           </button>
         )}
       </div>
 
-      {/* Column Body / Card Stack */}
+      {/* Column Body / Stack */}
       <div
         style={{
-          padding: "8px",
+          padding: "6px",
           display: "flex",
           flexDirection: "column",
-          gap: "8px",
+          gap: "6px",
           overflowY: "auto",
           flex: 1,
         }}
@@ -148,14 +121,13 @@ export const PipelineColumn: React.FC<PipelineColumnProps> = ({
         {leads.length === 0 ? (
           <div
             style={{
-              padding: "24px 12px",
+              padding: "16px 8px",
               textAlign: "center",
               fontSize: "11px",
               color: "#A1A1AA",
-              fontStyle: "italic",
             }}
           >
-            No leads in this stage
+            None
           </div>
         ) : (
           leads.map((lead) => (

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import { Sidebar } from "./Sidebar";
 import { PipelineBoard } from "./PipelineBoard";
 import { CampaignsTable } from "./CampaignsTable";
@@ -10,7 +10,6 @@ import { LeadDetailPanel } from "./LeadDetailPanel";
 import { NewCampaignForm } from "./NewCampaignForm";
 import { TestModeBanner } from "./TestModeBanner";
 import { ApprovalMode, CampaignRecord } from "../types/lead";
-import { PlusCircle, RefreshCw } from "lucide-react";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -22,17 +21,17 @@ export const AppShell: React.FC = () => {
   const [globalApprovalMode, setGlobalApprovalMode] = useState<ApprovalMode>("review");
   const [isUpdatingMode, setIsUpdatingMode] = useState<boolean>(false);
 
-  // 1. Fetch campaigns with auto-revalidation
+  // 1. Fetch campaigns
   const { data: campaignData, mutate: mutateCampaigns } = useSWR("/api/campaigns", fetcher, {
     refreshInterval: 8000,
   });
   const campaigns: CampaignRecord[] = campaignData?.campaigns || [];
 
-  // 2. Fetch leads (filtered by selectedCampaignId if set)
+  // 2. Fetch leads
   const leadsUrl = selectedCampaignId
     ? `/api/leads?campaignId=${selectedCampaignId}`
     : "/api/leads";
-  const { data: leadsData, mutate: mutateLeads, isLoading: leadsLoading, isValidating } = useSWR(
+  const { data: leadsData, mutate: mutateLeads, isLoading: leadsLoading } = useSWR(
     leadsUrl,
     fetcher,
     { refreshInterval: 6000 }
@@ -42,7 +41,6 @@ export const AppShell: React.FC = () => {
   // 3. Fetch Settings
   const { data: settings } = useSWR("/api/settings", fetcher);
 
-  // Mode Toggle Handler
   const handleToggleApprovalMode = async (newMode: ApprovalMode) => {
     setGlobalApprovalMode(newMode);
 
@@ -72,7 +70,7 @@ export const AppShell: React.FC = () => {
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#FBFBFC" }}>
-      {/* 1. Persistent Sidebar */}
+      {/* 1. Sidebar */}
       <Sidebar
         currentTab={currentTab}
         onSelectTab={(tab) => {
@@ -88,41 +86,41 @@ export const AppShell: React.FC = () => {
         isUpdatingMode={isUpdatingMode}
       />
 
-      {/* 2. Main Content Canvas */}
+      {/* 2. Main Canvas */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-        {/* Top Header */}
+        {/* Header Bar */}
         <header
           style={{
-            height: "50px",
+            height: "44px",
             backgroundColor: "#FFFFFF",
             borderBottom: "1px solid #E4E4E7",
-            padding: "0 24px",
+            padding: "0 20px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            gap: "16px",
+            gap: "12px",
             position: "sticky",
             top: 0,
             zIndex: 10,
           }}
         >
-          {/* Breadcrumb / Context title */}
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <span style={{ fontSize: "13px", fontWeight: 700, color: "#18181B", textTransform: "capitalize" }}>
+          {/* Breadcrumb */}
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <span style={{ fontSize: "12px", fontWeight: 600, color: "#18181B", textTransform: "capitalize" }}>
               {currentTab}
             </span>
             {selectedCampaignId && (
               <>
-                <span style={{ color: "#A1A1AA" }}>/</span>
-                <span style={{ fontSize: "12px", color: "#4338CA", fontWeight: 600 }}>
-                  {campaigns.find((c) => c.id === selectedCampaignId)?.icp_description.substring(0, 32)}...
+                <span style={{ color: "#A1A1AA", fontSize: "11px" }}>/</span>
+                <span style={{ fontSize: "11px", color: "#4338CA" }}>
+                  {campaigns.find((c) => c.id === selectedCampaignId)?.icp_description.substring(0, 28)}...
                 </span>
               </>
             )}
           </div>
 
           {/* Right Header items */}
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <TestModeBanner
               overrideEmail={settings?.testModeRecipientOverride}
               isActive={settings?.isTestOverrideActive}
@@ -133,50 +131,41 @@ export const AppShell: React.FC = () => {
                 mutateLeads();
                 mutateCampaigns();
               }}
-              title="Refresh Pipeline Data"
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "4px",
-                padding: "5px 8px",
+                padding: "3px 8px",
                 backgroundColor: "#FFFFFF",
                 border: "1px solid #E4E4E7",
-                borderRadius: "4px",
+                borderRadius: "3px",
                 fontSize: "11px",
                 color: "#52525B",
                 cursor: "pointer",
               }}
             >
-              <RefreshCw size={12} className={isValidating ? "animate-spin" : ""} style={isValidating ? { animation: "spin 1s linear infinite" } : {}} />
-              <span>Refresh</span>
+              Refresh
             </button>
 
             {currentTab === "pipeline" && (
               <button
                 onClick={() => setIsNewCampaignOpen(true)}
                 style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "5px",
-                  padding: "5px 12px",
+                  padding: "4px 10px",
                   backgroundColor: "#4338CA",
                   color: "#FFFFFF",
-                  borderRadius: "4px",
+                  borderRadius: "3px",
                   border: "none",
                   fontSize: "11px",
-                  fontWeight: 600,
+                  fontWeight: 500,
                   cursor: "pointer",
                 }}
               >
-                <PlusCircle size={13} />
-                <span>New Campaign</span>
+                + New Campaign
               </button>
             )}
           </div>
         </header>
 
-        {/* View Switcher Container */}
-        <main style={{ padding: "20px 24px", flex: 1 }}>
+        {/* View Content */}
+        <main style={{ padding: "16px 20px", flex: 1 }}>
           {currentTab === "pipeline" && (
             <PipelineBoard
               leads={leads}
@@ -204,7 +193,7 @@ export const AppShell: React.FC = () => {
         </main>
       </div>
 
-      {/* 3. Slide-in Lead Detail Panel */}
+      {/* Slide-in Lead Detail Drawer */}
       {selectedLeadId && (
         <LeadDetailPanel
           leadId={selectedLeadId}
@@ -216,7 +205,7 @@ export const AppShell: React.FC = () => {
         />
       )}
 
-      {/* 4. New Campaign Modal */}
+      {/* New Campaign Modal */}
       <NewCampaignForm
         isOpen={isNewCampaignOpen}
         onClose={() => setIsNewCampaignOpen(false)}

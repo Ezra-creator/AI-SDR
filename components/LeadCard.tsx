@@ -1,5 +1,4 @@
 import React from "react";
-import { Globe, Mail, Clock } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
 
 interface LeadCardProps {
@@ -22,37 +21,25 @@ function formatRelativeTime(dateStr: string): string {
   try {
     const diffMs = Date.now() - new Date(dateStr).getTime();
     const diffMins = Math.floor(diffMs / (1000 * 60));
-    if (diffMins < 1) return "just now";
-    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffMins < 1) return "now";
+    if (diffMins < 60) return `${diffMins}m`;
     const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffHours < 24) return `${diffHours}h`;
     const diffDays = Math.floor(diffHours / 24);
-    return `${diffDays}d ago`;
+    return `${diffDays}d`;
   } catch {
-    return "recently";
+    return "";
   }
 }
 
 export const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick, isSelected = false }) => {
   const score = lead.fit_score;
-  let scoreBg = "#F4F4F5";
-  let scoreText = "#71717A";
-  let scoreBorder = "#E4E4E7";
+  let scoreColor = "#71717A";
 
   if (score !== null && score !== undefined) {
-    if (score >= 80) {
-      scoreBg = "#ECFDF5";
-      scoreText = "#047857";
-      scoreBorder = "#A7F3D0";
-    } else if (score >= 50) {
-      scoreBg = "#FEF3C7";
-      scoreText = "#B45309";
-      scoreBorder = "#FDE68A";
-    } else {
-      scoreBg = "#FFF1F2";
-      scoreText = "#BE123C";
-      scoreBorder = "#FECDD3";
-    }
+    if (score >= 80) scoreColor = "#047857";
+    else if (score >= 50) scoreColor = "#B45309";
+    else scoreColor = "#BE123C";
   }
 
   return (
@@ -60,15 +47,14 @@ export const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick, isSelected = 
       onClick={onClick}
       style={{
         backgroundColor: "#FFFFFF",
-        border: isSelected ? "1.5px solid #4338CA" : "1px solid #E4E4E7",
-        borderRadius: "5px",
-        padding: "10px",
+        border: isSelected ? "1px solid #4338CA" : "1px solid #E4E4E7",
+        borderRadius: "3px",
+        padding: "8px",
         cursor: "pointer",
-        transition: "border-color 0.12s ease, box-shadow 0.12s ease",
-        boxShadow: isSelected ? "0 0 0 1px #4338CA" : "0 1px 2px rgba(0,0,0,0.03)",
+        transition: "border-color 0.1s ease",
         display: "flex",
         flexDirection: "column",
-        gap: "6px",
+        gap: "4px",
       }}
       onMouseEnter={(e) => {
         if (!isSelected) e.currentTarget.style.borderColor = "#A1A1AA";
@@ -77,9 +63,9 @@ export const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick, isSelected = 
         if (!isSelected) e.currentTarget.style.borderColor = "#E4E4E7";
       }}
     >
-      {/* 1. Header: Name, Score & Status Dot */}
+      {/* 1. Header: Name, Status Dot & Score */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "6px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "6px", overflow: "hidden" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "5px", overflow: "hidden" }}>
           <StatusBadge status={lead.status} showDotOnly />
           <span
             style={{
@@ -97,15 +83,10 @@ export const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick, isSelected = 
 
         {score !== null && score !== undefined && (
           <span
-            title={`Fit Score: ${score}/100`}
             style={{
-              fontSize: "10px",
-              fontWeight: 700,
-              padding: "1px 5px",
-              borderRadius: "3px",
-              backgroundColor: scoreBg,
-              color: scoreText,
-              border: `1px solid ${scoreBorder}`,
+              fontSize: "11px",
+              fontWeight: 600,
+              color: scoreColor,
               flexShrink: 0,
             }}
           >
@@ -115,20 +96,17 @@ export const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick, isSelected = 
       </div>
 
       {/* 2. Domain */}
-      <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "11px", color: "#71717A" }}>
-        <Globe size={11} color="#A1A1AA" />
-        <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-          {lead.domain}
-        </span>
+      <div style={{ fontSize: "11px", color: "#71717A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        {lead.domain}
       </div>
 
       {/* 3. Research Snippet */}
-      {lead.company_summary ? (
+      {lead.company_summary && (
         <div
           style={{
             fontSize: "11px",
             color: "#52525B",
-            lineHeight: 1.35,
+            lineHeight: 1.3,
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
@@ -137,34 +115,26 @@ export const LeadCard: React.FC<LeadCardProps> = ({ lead, onClick, isSelected = 
         >
           {lead.company_summary}
         </div>
-      ) : (
-        <div style={{ fontSize: "11px", color: "#A1A1AA", fontStyle: "italic" }}>
-          Research pending or thin
-        </div>
       )}
 
-      {/* 4. Footer: Relative timestamp & email count */}
+      {/* 4. Footer info */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          paddingTop: "4px",
+          paddingTop: "3px",
+          marginTop: "2px",
           borderTop: "1px solid #F4F4F5",
           fontSize: "10px",
           color: "#A1A1AA",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "3px" }}>
-          <Clock size={10} />
-          <span>{formatRelativeTime(lead.created_at)}</span>
-        </div>
-
+        <span>{formatRelativeTime(lead.created_at)}</span>
         {lead.email_count !== undefined && lead.email_count > 0 && (
-          <div style={{ display: "flex", alignItems: "center", gap: "3px", color: "#4338CA", fontWeight: 500 }}>
-            <Mail size={10} />
-            <span>{lead.email_count} {lead.email_count === 1 ? "email" : "emails"}</span>
-          </div>
+          <span style={{ color: "#52525B", fontWeight: 500 }}>
+            {lead.email_count} {lead.email_count === 1 ? "email" : "emails"}
+          </span>
         )}
       </div>
     </div>

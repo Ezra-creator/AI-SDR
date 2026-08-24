@@ -21,28 +21,28 @@ const STATUS_CONFIG: Record<
   researched: {
     label: "Researched",
     dotColor: "#64748B",
-    bg: "#F1F5F9",
-    text: "#334155",
-    border: "#CBD5E1",
+    bg: "#F8FAFC",
+    text: "#475569",
+    border: "#E2E8F0",
   },
   scored: {
     label: "Scored",
     dotColor: "#2563EB",
     bg: "#EFF6FF",
     text: "#1D4ED8",
-    border: "#BFDBFE",
+    border: "#DBEAFE",
   },
   pending_approval: {
-    label: "Pending Approval",
+    label: "Pending",
     dotColor: "#D97706",
-    bg: "#FEF3C7",
+    bg: "#FFFBEB",
     text: "#B45309",
     border: "#FDE68A",
   },
   outreach_generated: {
-    label: "Draft Ready",
+    label: "Pending",
     dotColor: "#D97706",
-    bg: "#FEF3C7",
+    bg: "#FFFBEB",
     text: "#B45309",
     border: "#FDE68A",
   },
@@ -95,8 +95,8 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
         title={config.label}
         style={{
           display: "inline-block",
-          width: "7px",
-          height: "7px",
+          width: "6px",
+          height: "6px",
           borderRadius: "50%",
           backgroundColor: config.dotColor,
           flexShrink: 0,
@@ -111,11 +111,11 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       style={{
         display: "inline-flex",
         alignItems: "center",
-        gap: "5px",
-        padding: "2px 7px",
+        gap: "4px",
+        padding: "1px 6px",
         fontSize: "11px",
         fontWeight: 500,
-        borderRadius: "4px",
+        borderRadius: "3px",
         backgroundColor: config.bg,
         color: config.text,
         border: `1px solid ${config.border}`,
@@ -125,8 +125,8 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
     >
       <span
         style={{
-          width: "5px",
-          height: "5px",
+          width: "4px",
+          height: "4px",
           borderRadius: "50%",
           backgroundColor: config.dotColor,
         }}

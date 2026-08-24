@@ -1,17 +1,5 @@
 import React, { useState } from "react";
 import useSWR, { mutate } from "swr";
-import {
-  X,
-  ExternalLink,
-  ShieldCheck,
-  CheckCircle2,
-  AlertTriangle,
-  Mail,
-  FileText,
-  Clock,
-  Sparkles,
-  Check,
-} from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
 import { EmailHistoryItem } from "./EmailHistoryItem";
 
@@ -42,7 +30,6 @@ export const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({
   const lead = fullHistory?.lead;
   const research = fullHistory?.research;
   const emails = fullHistory?.emails || [];
-  const campaign = fullHistory?.campaign;
 
   const handleApprove = async (emailId: string) => {
     setActionLoading(true);
@@ -114,9 +101,9 @@ export const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({
   const score = lead?.fit_score;
   let scoreColor = "#71717A";
   if (score !== null && score !== undefined) {
-    if (score >= 80) scoreColor = "#059669";
-    else if (score >= 50) scoreColor = "#D97706";
-    else scoreColor = "#E11D48";
+    if (score >= 80) scoreColor = "#047857";
+    else if (score >= 50) scoreColor = "#B45309";
+    else scoreColor = "#BE123C";
   }
 
   return (
@@ -126,60 +113,49 @@ export const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({
         top: 0,
         right: 0,
         bottom: 0,
-        width: "580px",
+        width: "540px",
         maxWidth: "100vw",
         backgroundColor: "#FFFFFF",
         borderLeft: "1px solid #E4E4E7",
-        boxShadow: "-4px 0 16px rgba(0,0,0,0.06)",
+        boxShadow: "-2px 0 8px rgba(0,0,0,0.04)",
         zIndex: 50,
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
       }}
     >
-      {/* 1. Header Bar */}
+      {/* Header */}
       <div
         style={{
-          padding: "16px 20px",
+          padding: "12px 16px",
           borderBottom: "1px solid #E4E4E7",
-          backgroundColor: "#FBFBFC",
           display: "flex",
           alignItems: "flex-start",
           justifyContent: "space-between",
-          gap: "12px",
+          gap: "10px",
         }}
       >
         <div>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-            <h2 style={{ fontSize: "16px", fontWeight: 700, color: "#18181B" }}>
-              {lead?.company_name || "Loading Lead Details..."}
+          <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px" }}>
+            <h2 style={{ fontSize: "14px", fontWeight: 600, color: "#18181B" }}>
+              {lead?.company_name || "Lead Details"}
             </h2>
             {lead && <StatusBadge status={lead.status} />}
           </div>
 
           {lead && (
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "12px", color: "#71717A" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "11px", color: "#71717A" }}>
               <a
                 href={`https://${lead.domain}`}
                 target="_blank"
                 rel="noreferrer"
-                style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: "4px",
-                  color: "#4338CA",
-                  textDecoration: "none",
-                  fontWeight: 500,
-                }}
+                style={{ color: "#4338CA", textDecoration: "none" }}
               >
-                <span>{lead.domain}</span>
-                <ExternalLink size={11} />
+                {lead.domain} ↗
               </a>
-
               <span>•</span>
-
-              <span style={{ display: "inline-flex", alignItems: "center", gap: "4px", fontWeight: 600, color: scoreColor }}>
-                Fit Score: {score !== null && score !== undefined ? `${score}/100` : "Unscored"}
+              <span style={{ fontWeight: 600, color: scoreColor }}>
+                Score: {score !== null && score !== undefined ? score : "—"}
               </span>
             </div>
           )}
@@ -190,23 +166,18 @@ export const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({
             <button
               onClick={handleMarkReplied}
               disabled={markingReplied}
-              title="Mark as replied to stop automatic follow-up sequence"
               style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: "4px",
-                padding: "5px 9px",
+                padding: "3px 8px",
                 backgroundColor: "#FFFFFF",
                 color: "#059669",
                 border: "1px solid #A7F3D0",
-                borderRadius: "4px",
+                borderRadius: "3px",
                 fontSize: "11px",
-                fontWeight: 600,
+                fontWeight: 500,
                 cursor: "pointer",
               }}
             >
-              <CheckCircle2 size={12} />
-              <span>{markingReplied ? "Updating..." : "Mark Replied"}</span>
+              {markingReplied ? "Updating..." : "Mark Replied"}
             </button>
           )}
 
@@ -216,159 +187,85 @@ export const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({
               background: "none",
               border: "none",
               cursor: "pointer",
-              padding: "4px",
+              fontSize: "13px",
               color: "#71717A",
+              padding: "2px 4px",
             }}
           >
-            <X size={18} />
+            ✕
           </button>
         </div>
       </div>
 
-      {/* 2. Scrollable Body Content */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "20px", display: "flex", flexDirection: "column", gap: "20px" }}>
+      {/* Body */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
         {isLoading && (
-          <div style={{ textAlign: "center", padding: "40px 0", color: "#71717A", fontSize: "12px" }}>
-            Fetching grounded lead research and email thread...
+          <div style={{ padding: "20px 0", color: "#71717A", fontSize: "11px" }}>
+            Loading dossier...
           </div>
         )}
 
         {error && (
-          <div style={{ padding: "12px", backgroundColor: "#FEF2F2", color: "#991B1B", borderRadius: "4px", fontSize: "12px" }}>
-            Failed to load lead details: {error.message || String(error)}
+          <div style={{ padding: "8px", backgroundColor: "#FEF2F2", color: "#991B1B", fontSize: "11px", borderRadius: "3px" }}>
+            {error.message || String(error)}
           </div>
         )}
 
         {lead && (
           <>
-            {/* Disqualification Banner */}
+            {/* Disqualification / Reply Notice */}
             {lead.status === "disqualified" && (
-              <div
-                style={{
-                  padding: "10px 12px",
-                  backgroundColor: "#FFF1F2",
-                  border: "1px solid #FECDD3",
-                  borderRadius: "5px",
-                  fontSize: "12px",
-                  color: "#BE123C",
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: "8px",
-                }}
-              >
-                <AlertTriangle size={15} style={{ flexShrink: 0, marginTop: "1px" }} />
-                <div>
-                  <strong>Disqualified Lead:</strong> This lead scored below the qualification threshold or failed core ICP criteria. Outreach email generation is skipped.
-                </div>
+              <div style={{ padding: "6px 8px", backgroundColor: "#FFF1F2", border: "1px solid #FECDD3", borderRadius: "3px", fontSize: "11px", color: "#BE123C" }}>
+                Disqualified: Failed ICP criteria threshold. Outreach skipped.
               </div>
             )}
-
-            {/* Replied Banner */}
             {lead.has_replied && (
-              <div
-                style={{
-                  padding: "10px 12px",
-                  backgroundColor: "#ECFDF5",
-                  border: "1px solid #A7F3D0",
-                  borderRadius: "5px",
-                  fontSize: "12px",
-                  color: "#047857",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                <CheckCircle2 size={15} />
-                <div>
-                  <strong>Prospect Replied:</strong> Reply registered. All automatic follow-up sequence triggers are halted.
-                </div>
+              <div style={{ padding: "6px 8px", backgroundColor: "#ECFDF5", border: "1px solid #A7F3D0", borderRadius: "3px", fontSize: "11px", color: "#047857" }}>
+                Replied: Follow-up sequence completed and halted.
               </div>
             )}
 
-            {/* Research Section */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <h3 style={{ fontSize: "12px", fontWeight: 700, color: "#18181B", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-                  Verified Web Research
-                </h3>
-                {research && (
-                  <span
-                    style={{
-                      fontSize: "10px",
-                      fontWeight: 600,
-                      padding: "1px 6px",
-                      borderRadius: "3px",
-                      backgroundColor: research.research_quality === "good" ? "#ECFDF5" : "#F4F4F5",
-                      color: research.research_quality === "good" ? "#047857" : "#71717A",
-                      border: `1px solid ${research.research_quality === "good" ? "#A7F3D0" : "#E4E4E7"}`,
-                    }}
-                  >
-                    Quality: {research.research_quality.toUpperCase()}
-                  </span>
-                )}
+            {/* Research Dossier Section */}
+            <div>
+              <div style={{ fontSize: "11px", fontWeight: 600, color: "#71717A", textTransform: "uppercase", letterSpacing: "0.03em", marginBottom: "8px" }}>
+                Research Findings
               </div>
 
               {research ? (
-                <div
-                  style={{
-                    backgroundColor: "#FBFBFC",
-                    border: "1px solid #E4E4E7",
-                    borderRadius: "6px",
-                    padding: "14px",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "12px",
-                  }}
-                >
-                  {/* Summary */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "12px" }}>
                   <div>
-                    <div style={{ fontSize: "11px", fontWeight: 600, color: "#71717A", marginBottom: "4px" }}>
-                      Company Overview:
-                    </div>
-                    <p style={{ fontSize: "12px", color: "#18181B", lineHeight: 1.45 }}>
-                      {research.company_summary}
-                    </p>
+                    <div style={{ fontSize: "11px", color: "#71717A", marginBottom: "2px" }}>Overview</div>
+                    <div style={{ color: "#18181B", lineHeight: 1.4 }}>{research.company_summary}</div>
                   </div>
 
-                  {/* News */}
                   {research.recent_news && research.recent_news.length > 0 && (
                     <div>
-                      <div style={{ fontSize: "11px", fontWeight: 600, color: "#71717A", marginBottom: "4px" }}>
-                        Recent News & Announcements:
-                      </div>
-                      <ul style={{ paddingLeft: "16px", fontSize: "12px", color: "#334155", lineHeight: 1.4 }}>
+                      <div style={{ fontSize: "11px", color: "#71717A", marginBottom: "2px" }}>Recent News & Signals</div>
+                      <ul style={{ paddingLeft: "14px", color: "#334155", lineHeight: 1.35 }}>
                         {research.recent_news.map((item: string, idx: number) => (
-                          <li key={idx} style={{ marginBottom: "3px" }}>
-                            {item}
-                          </li>
+                          <li key={idx} style={{ marginBottom: "2px" }}>{item}</li>
                         ))}
                       </ul>
                     </div>
                   )}
 
-                  {/* Pain Points */}
                   {research.likely_pain_points && research.likely_pain_points.length > 0 && (
                     <div>
-                      <div style={{ fontSize: "11px", fontWeight: 600, color: "#71717A", marginBottom: "4px" }}>
-                        Likely Pain Points & Use Cases:
-                      </div>
-                      <ul style={{ paddingLeft: "16px", fontSize: "12px", color: "#334155", lineHeight: 1.4 }}>
+                      <div style={{ fontSize: "11px", color: "#71717A", marginBottom: "2px" }}>Stated Pain Points</div>
+                      <ul style={{ paddingLeft: "14px", color: "#334155", lineHeight: 1.35 }}>
                         {research.likely_pain_points.map((item: string, idx: number) => (
-                          <li key={idx} style={{ marginBottom: "3px" }}>
-                            {item}
-                          </li>
+                          <li key={idx} style={{ marginBottom: "2px" }}>{item}</li>
                         ))}
                       </ul>
                     </div>
                   )}
 
-                  {/* Grounded Source URLs */}
                   {research.source_urls && research.source_urls.length > 0 && (
                     <div style={{ paddingTop: "6px", borderTop: "1px solid #F4F4F5" }}>
-                      <div style={{ fontSize: "10px", fontWeight: 600, color: "#A1A1AA", textTransform: "uppercase", marginBottom: "4px" }}>
-                        Ground-Truth Inspected URLs ({research.source_urls.length}):
+                      <div style={{ fontSize: "10px", color: "#A1A1AA", textTransform: "uppercase", marginBottom: "4px" }}>
+                        Verified Sources ({research.source_urls.length})
                       </div>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
                         {research.source_urls.slice(0, 4).map((url: string, idx: number) => (
                           <a
                             key={idx}
@@ -378,11 +275,11 @@ export const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({
                             style={{
                               fontSize: "10px",
                               color: "#4338CA",
-                              backgroundColor: "#EEF2FF",
-                              padding: "2px 6px",
-                              borderRadius: "3px",
+                              backgroundColor: "#F4F4F5",
+                              padding: "1px 5px",
+                              borderRadius: "2px",
                               textDecoration: "none",
-                              maxWidth: "240px",
+                              maxWidth: "200px",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
@@ -396,33 +293,20 @@ export const LeadDetailPanel: React.FC<LeadDetailPanelProps> = ({
                   )}
                 </div>
               ) : (
-                <div style={{ padding: "16px", backgroundColor: "#F4F4F5", borderRadius: "5px", color: "#71717A", fontSize: "12px" }}>
-                  No grounded research data stored for this lead yet.
-                </div>
+                <div style={{ color: "#A1A1AA", fontSize: "11px" }}>No research data recorded.</div>
               )}
             </div>
 
-            {/* Email History Thread */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <h3 style={{ fontSize: "12px", fontWeight: 700, color: "#18181B", textTransform: "uppercase", letterSpacing: "0.04em" }}>
-                  Outreach Sequence ({emails.length})
-                </h3>
-
-                {lead.next_follow_up_date && !lead.has_replied && (
-                  <span style={{ fontSize: "11px", color: "#7C3AED", fontWeight: 500, display: "flex", alignItems: "center", gap: "3px" }}>
-                    <Clock size={11} />
-                    <span>Next follow-up scheduled</span>
-                  </span>
-                )}
+            {/* Email History Sequence */}
+            <div style={{ borderTop: "1px solid #E4E4E7", paddingTop: "12px" }}>
+              <div style={{ fontSize: "11px", fontWeight: 600, color: "#71717A", textTransform: "uppercase", letterSpacing: "0.03em", marginBottom: "8px" }}>
+                Outreach Sequence ({emails.length})
               </div>
 
               {emails.length === 0 ? (
-                <div style={{ padding: "20px", textAlign: "center", backgroundColor: "#F4F4F5", borderRadius: "5px", color: "#71717A", fontSize: "12px" }}>
-                  No outreach emails generated yet.
-                </div>
+                <div style={{ color: "#A1A1AA", fontSize: "11px" }}>No emails generated.</div>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                   {emails.map((email: any) => (
                     <EmailHistoryItem
                       key={email.id}

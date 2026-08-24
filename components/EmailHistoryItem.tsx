@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Check, X, Edit3, Send, AlertCircle, Sparkles, ChevronDown, ChevronUp } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
 
 interface EmailHistoryItemProps {
@@ -51,58 +50,38 @@ export const EmailHistoryItem: React.FC<EmailHistoryItemProps> = ({
       style={{
         backgroundColor: "#FFFFFF",
         border: isPending ? "1px solid #FCD34D" : "1px solid #E4E4E7",
-        borderRadius: "6px",
+        borderRadius: "4px",
         overflow: "hidden",
-        boxShadow: isPending ? "0 1px 3px rgba(217, 119, 6, 0.08)" : "none",
       }}
     >
-      {/* Email Card Header */}
+      {/* Header */}
       <div
         onClick={() => setIsExpanded(!isExpanded)}
         style={{
-          padding: "10px 12px",
+          padding: "8px 10px",
           backgroundColor: isPending ? "#FFFBEB" : "#FBFBFC",
           borderBottom: isExpanded ? "1px solid #E4E4E7" : "none",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           cursor: "pointer",
+          userSelect: "none",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", overflow: "hidden" }}>
-          <span
-            style={{
-              fontSize: "10px",
-              fontWeight: 700,
-              padding: "1px 6px",
-              borderRadius: "3px",
-              backgroundColor: isSent ? "#EEF2FF" : "#FEF3C7",
-              color: isSent ? "#4338CA" : "#B45309",
-              border: `1px solid ${isSent ? "#C7D2FE" : "#FDE68A"}`,
-            }}
-          >
-            {email.sequence_number === 1 ? "Initial Outreach" : `Follow-Up #${email.sequence_number - 1}`}
+        <div style={{ display: "flex", alignItems: "center", gap: "6px", overflow: "hidden" }}>
+          <span style={{ fontSize: "11px", fontWeight: 600, color: isSent ? "#4338CA" : "#B45309" }}>
+            #{email.sequence_number}
           </span>
 
           {email.angle_used && (
-            <span
-              style={{
-                fontSize: "10px",
-                fontWeight: 600,
-                color: "#6D28D9",
-                backgroundColor: "#F5F3FF",
-                padding: "1px 5px",
-                borderRadius: "3px",
-                border: "1px solid #DDD6FE",
-              }}
-            >
-              Angle: {email.angle_used.replace(/_/g, " ")}
+            <span style={{ fontSize: "10px", color: "#6D28D9", backgroundColor: "#F5F3FF", padding: "1px 4px", borderRadius: "2px" }}>
+              {email.angle_used.replace(/_/g, " ")}
             </span>
           )}
 
           <span
             style={{
-              fontWeight: 600,
+              fontWeight: 500,
               fontSize: "12px",
               color: "#18181B",
               whiteSpace: "nowrap",
@@ -116,61 +95,55 @@ export const EmailHistoryItem: React.FC<EmailHistoryItemProps> = ({
 
         <div style={{ display: "flex", alignItems: "center", gap: "6px", flexShrink: 0 }}>
           <StatusBadge status={email.status} />
-          {isExpanded ? <ChevronUp size={14} color="#71717A" /> : <ChevronDown size={14} color="#71717A" />}
+          <span style={{ fontSize: "10px", color: "#A1A1AA" }}>{isExpanded ? "▲" : "▼"}</span>
         </div>
       </div>
 
-      {/* Expanded Content */}
+      {/* Body */}
       {isExpanded && (
-        <div style={{ padding: "12px", display: "flex", flexDirection: "column", gap: "10px" }}>
+        <div style={{ padding: "10px", display: "flex", flexDirection: "column", gap: "8px" }}>
           {isEditing ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
               <div>
-                <label style={{ fontSize: "10px", fontWeight: 600, color: "#71717A", textTransform: "uppercase" }}>
-                  Subject Line:
-                </label>
+                <label style={{ fontSize: "10px", color: "#71717A", display: "block", marginBottom: "2px" }}>Subject</label>
                 <input
                   type="text"
                   value={subjectDraft}
                   onChange={(e) => setSubjectDraft(e.target.value)}
                   style={{
                     width: "100%",
-                    padding: "6px 8px",
-                    borderRadius: "4px",
+                    padding: "4px 6px",
+                    borderRadius: "3px",
                     border: "1px solid #4338CA",
                     fontSize: "12px",
-                    marginTop: "2px",
                   }}
                 />
               </div>
 
               <div>
-                <label style={{ fontSize: "10px", fontWeight: 600, color: "#71717A", textTransform: "uppercase" }}>
-                  Email Body (3-5 sentences):
-                </label>
+                <label style={{ fontSize: "10px", color: "#71717A", display: "block", marginBottom: "2px" }}>Body</label>
                 <textarea
-                  rows={6}
+                  rows={5}
                   value={bodyDraft}
                   onChange={(e) => setBodyDraft(e.target.value)}
                   style={{
                     width: "100%",
-                    padding: "8px",
-                    borderRadius: "4px",
+                    padding: "6px",
+                    borderRadius: "3px",
                     border: "1px solid #4338CA",
                     fontSize: "12px",
-                    lineHeight: 1.5,
+                    lineHeight: 1.4,
                     fontFamily: "inherit",
-                    marginTop: "2px",
                   }}
                 />
               </div>
 
-              <div style={{ display: "flex", gap: "6px", justifyContent: "flex-end" }}>
+              <div style={{ display: "flex", gap: "6px", justifyContent: "flex-end", marginTop: "4px" }}>
                 <button
                   onClick={() => setIsEditing(false)}
                   style={{
-                    padding: "5px 10px",
-                    borderRadius: "4px",
+                    padding: "4px 8px",
+                    borderRadius: "3px",
                     border: "1px solid #E4E4E7",
                     backgroundColor: "#FFFFFF",
                     fontSize: "11px",
@@ -183,36 +156,31 @@ export const EmailHistoryItem: React.FC<EmailHistoryItemProps> = ({
                   onClick={handleSave}
                   disabled={savingEdit}
                   style={{
-                    padding: "5px 12px",
-                    borderRadius: "4px",
+                    padding: "4px 10px",
+                    borderRadius: "3px",
                     border: "none",
                     backgroundColor: "#4338CA",
                     color: "#FFFFFF",
                     fontSize: "11px",
-                    fontWeight: 600,
+                    fontWeight: 500,
                     cursor: "pointer",
                   }}
                 >
-                  {savingEdit ? "Saving..." : "Save Changes"}
+                  {savingEdit ? "Saving..." : "Save"}
                 </button>
               </div>
             </div>
           ) : (
             <>
-              {/* Subject */}
-              <div style={{ fontSize: "11px", color: "#71717A" }}>
-                <strong style={{ color: "#18181B" }}>Subject:</strong> {email.subject}
-              </div>
-
-              {/* Body */}
+              {/* Body text */}
               <div
                 style={{
                   fontSize: "12px",
                   color: "#18181B",
-                  lineHeight: 1.5,
+                  lineHeight: 1.45,
                   backgroundColor: "#FBFBFC",
-                  padding: "10px",
-                  borderRadius: "4px",
+                  padding: "8px",
+                  borderRadius: "3px",
                   border: "1px solid #F4F4F5",
                   whiteSpace: "pre-wrap",
                 }}
@@ -220,24 +188,23 @@ export const EmailHistoryItem: React.FC<EmailHistoryItemProps> = ({
                 {email.body}
               </div>
 
-              {/* Personalization Hooks Cited */}
+              {/* Verified hooks */}
               {email.personalization_hooks_used && email.personalization_hooks_used.length > 0 && (
                 <div style={{ fontSize: "11px", color: "#52525B" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "4px", fontWeight: 600, color: "#4338CA", marginBottom: "4px" }}>
-                    <Sparkles size={12} />
-                    <span>Personalization Hook Verified:</span>
+                  <div style={{ fontSize: "10px", fontWeight: 600, color: "#71717A", textTransform: "uppercase", marginBottom: "2px" }}>
+                    Verified Hook Cited
                   </div>
                   {email.personalization_hooks_used.map((hook, idx) => (
-                    <div key={idx} style={{ paddingLeft: "8px", borderLeft: "2px solid #C7D2FE", marginBottom: "3px" }}>
+                    <div key={idx} style={{ paddingLeft: "6px", borderLeft: "2px solid #C7D2FE", marginBottom: "2px" }}>
                       <span>"{hook.fact}"</span>
                       {hook.sourceUrl && (
                         <a
                           href={hook.sourceUrl}
                           target="_blank"
                           rel="noreferrer"
-                          style={{ marginLeft: "6px", color: "#4338CA", fontSize: "10px", textDecoration: "underline" }}
+                          style={{ marginLeft: "4px", color: "#4338CA", fontSize: "10px", textDecoration: "none" }}
                         >
-                          Source
+                          [source]
                         </a>
                       )}
                     </div>
@@ -245,82 +212,68 @@ export const EmailHistoryItem: React.FC<EmailHistoryItemProps> = ({
                 </div>
               )}
 
-              {/* Action Buttons for Pending Drafts */}
+              {/* Action Buttons: Strict Hierarchy */}
               {isPending && (
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "8px",
-                    paddingTop: "8px",
+                    gap: "6px",
+                    paddingTop: "6px",
                     borderTop: "1px solid #F4F4F5",
                   }}
                 >
+                  {/* Primary: Solid green */}
                   <button
                     onClick={() => onApprove(email.id)}
                     disabled={isActionLoading}
-                    title="Approve draft and dispatch via Resend"
                     style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "5px",
-                      padding: "6px 12px",
+                      padding: "4px 10px",
                       backgroundColor: "#059669",
                       color: "#FFFFFF",
-                      borderRadius: "4px",
+                      borderRadius: "3px",
                       border: "none",
                       fontSize: "11px",
                       fontWeight: 600,
                       cursor: "pointer",
                     }}
                   >
-                    <Send size={12} />
-                    <span>Approve & Send</span>
+                    Approve & Send
                   </button>
 
+                  {/* Secondary: Outline */}
                   <button
                     onClick={() => setIsEditing(true)}
                     disabled={isActionLoading}
-                    title="Edit subject or body before approving"
                     style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "5px",
-                      padding: "6px 10px",
+                      padding: "4px 8px",
                       backgroundColor: "#FFFFFF",
                       color: "#18181B",
-                      borderRadius: "4px",
+                      borderRadius: "3px",
                       border: "1px solid #E4E4E7",
                       fontSize: "11px",
                       fontWeight: 500,
                       cursor: "pointer",
                     }}
                   >
-                    <Edit3 size={12} color="#71717A" />
-                    <span>Edit Draft</span>
+                    Edit
                   </button>
 
+                  {/* Tertiary: Ghost text */}
                   <button
                     onClick={() => onReject(email.id)}
                     disabled={isActionLoading}
-                    title="Reject draft"
                     style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "4px",
-                      padding: "6px 10px",
-                      backgroundColor: "#FFFFFF",
+                      padding: "4px 6px",
+                      backgroundColor: "transparent",
                       color: "#E11D48",
-                      borderRadius: "4px",
-                      border: "1px solid #FECDD3",
+                      border: "none",
                       fontSize: "11px",
-                      fontWeight: 500,
                       cursor: "pointer",
                       marginLeft: "auto",
                     }}
                   >
-                    <X size={12} />
-                    <span>Reject</span>
+                    Reject
                   </button>
                 </div>
               )}
